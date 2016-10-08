@@ -29,6 +29,15 @@ LE.create({
 });
 ```
 
+`le-challenge-sni` requires the `sni` option to `letsencrypt` to have
+`cacheCerts` and `uncacheCerts` methods. These are used to register/unregister
+the certificates. The default `le-sni-auto` instance satisfies this
+requirement.
+
+It also requires the `challengeType` option to `letsencrypt` to be either
+`tls-sni-01` or `tls-sni-02` and will generate and register certificates
+accordingly.
+
 Exposed Methods
 ---------------
 
