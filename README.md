@@ -25,6 +25,7 @@ var LE = require('letsencrypt');
 
 LE.create({
   server: LE.stagingServerUrl
+, challengeType: "tls-sni-01"
 , challenge: leChallenge
 });
 ```
