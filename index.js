@@ -3,11 +3,13 @@
 var generate = require('le-tls-sni').generate;
 
 module.exports.create = function (defaults) {
-  var handlers =  {
+  var challenges = {};
+
+  var handlers = {
     getOptions: function () {
       return defaults;
     }
-  , _challenges: {}
+
   , set: function (args, domain, token, secret, cb) {
       if (!args.sni || !args.sni.cacheCerts || !args.sni.uncacheCerts) {
          cb(new Error("incompatible SNI handler"));
@@ -19,7 +21,7 @@ module.exports.create = function (defaults) {
         }
         certs.auto = false;
         args.sni.cacheCerts(certs);
-        handlers._challenges[token] = {
+        challenges[token] = {
           subject: certs.subject
         , altnames: certs.altnames
         , sni: args.sni
@@ -27,13 +29,15 @@ module.exports.create = function (defaults) {
         cb(null);
       });
     }
+
   , get: function (args, domain, token, cb) {
       throw new Error("Challenge.get() has no implementation for standalone/express.");
     }
+
   , remove: function (args, domain, token, cb) {
-      var certs = handlers._challenges[token];
+      var certs = challenges[token];
       if (certs) {
-        delete handlers._challenges[token];
+        delete challenges[token];
         var sni = certs.sni;
         delete certs.sni;
         sni.uncacheCerts(certs);
